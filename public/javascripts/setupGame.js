@@ -17,6 +17,23 @@ backArrowContainer.addEventListener("mouseleave", () => {
     }
 })
 
+const socket = new WebSocket("ws://localhost:3000")
+
+socket.onopen = (ev) => {
+    socket.send("mi a péló van")
+    return false
+}
+
+socket.onmessage = (ev) => {
+    console.log(ev.data)
+    return false
+}
+
+socket.onclose = (ev) => {
+    console.log("what", ev)
+}
+
+
 for (let i = 0; i < 7; i++) {
     let name = "c" + i;
     const currentCanvas = document.getElementById(name);
@@ -32,6 +49,7 @@ for (let i = 0; i < 7; i++) {
         if (table[i].length < 6){
             console.log("ball dropped in canvas " + i)
             table[i].push("x")
+            socket.send({"column": i})
             if (table[i].length >= 6){
                 currentCanvas.style.background = "#1f6f86"
             }

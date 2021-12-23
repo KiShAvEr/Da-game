@@ -14,15 +14,15 @@
             <rect class="backArrow" width="18.919" height="6.03329" rx="3.01664" transform="matrix(0.65109 0.759001 -0.65109 0.759001 3.92822 10.0612)"/>
             <rect class="backArrow" width="18.919" height="6.03329" rx="3.01664" transform="matrix(0.65109 -0.759001 0.65109 0.759001 0 14.3595)"/>
         </svg>
-        <div id="topContainer" class="flex column jevenly acenter regcenter">
+        <div id="topContainer" class="flex column jevenly acenter">
             <img id="delftImage" src="./assets/delft.png" alt="Logo">
             <h1 id="turnString">Your turn!</h1>
         </div>
-        <svg id="backArrowContainer" width="33" height="29" viewBox="0 0 33 29" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
+        <!-- <svg id="backArrowContainer" width="33" height="29" viewBox="0 0 33 29" fill="none" xmlns="http://www.w3.org/2000/svg"></svg> -->
     </div>
     <div>
         <div class="flex row jevenly acenter">
-            <div class="scoreContainer playerOne">
+            <div class="scoreContainer playerOne flex column jevenly acenter">
                 <h1 class="playerOne" >You</h1>
                 <div class="playerOne playerColor">                    
                 </div>
@@ -37,7 +37,7 @@
                 <canvas id="c5"></canvas>
                 <canvas id="c6"></canvas>
             </div>
-            <div class="scoreContainer playerTwo">
+            <div class="scoreContainer playerTwo flex column jevenly acenter">
                 <h1 class="playerTwo">Opponent</h1>
                 <div class="playerTwo playerColor">                    
                 </div>
@@ -47,6 +47,6 @@
     </div>
 </body>
 <footer>
-    <script src="./javascripts/setupGame.js"></script>
+    <script type="module" src="./javascripts/setupGame.js"></script>
 </footer>
 </html>
