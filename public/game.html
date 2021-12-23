@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./stylesheets/gameStyles.css">
 </head>
 <body>
-    <div id="backContainer">
+    <div id="backContainer" class="flex row">
         <svg id="backArrowContainer" width="33" height="29" viewBox="0 0 33 29" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect class="backArrow" x="2.03076" y="10.653" width="30.9692" height="7.69387" rx="3.84694" />
             <rect class="backArrow" width="18.919" height="6.03329" rx="3.01664" transform="matrix(0.65109 0.759001 -0.65109 0.759001 3.92822 10.0612)"/>
@@ -18,6 +18,7 @@
             <img id="delftImage" src="./assets/delft.png" alt="Logo">
             <h1 id="turnString">Your turn!</h1>
         </div>
+        <svg id="backArrowContainer" width="33" height="29" viewBox="0 0 33 29" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
     </div>
     <div>
         <div class="flex row jevenly acenter">
@@ -28,13 +29,13 @@
                 <h1 class="playerOne" id="yourScore">3</h1>
             </div>
             <div class="flex row jcenter acenter nwrap" id="gameContainer">
+                <canvas id="c0"></canvas>
                 <canvas id="c1"></canvas>
                 <canvas id="c2"></canvas>
                 <canvas id="c3"></canvas>
                 <canvas id="c4"></canvas>
                 <canvas id="c5"></canvas>
                 <canvas id="c6"></canvas>
-                <canvas id="c7"></canvas>
             </div>
             <div class="scoreContainer playerTwo">
                 <h1 class="playerTwo">Opponent</h1>
