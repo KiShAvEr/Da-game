@@ -5,35 +5,47 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Issagame</title>
+    <link rel="stylesheet" href="./stylesheets/gameStyles.css">
 </head>
-<body style="margin: 0px; height: 100%; width: 100%; padding: 1%;">
-    <div style="width: 100%; height: 30vmin;">
-        <svg onclick="window.open('http://localhost:3000/', '_self')" width="33" height="29" viewBox="0 0 33 29" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="2.03076" y="10.653" width="30.9692" height="7.69387" rx="3.84694" fill="black"/>
-            <rect width="18.919" height="6.03329" rx="3.01664" transform="matrix(0.65109 0.759001 -0.65109 0.759001 3.92822 10.0612)" fill="black"/>
-            <rect width="18.919" height="6.03329" rx="3.01664" transform="matrix(0.65109 -0.759001 0.65109 0.759001 0 14.3595)" fill="black"/>
+<body>
+    <div id="backContainer">
+        <svg id="backArrowContainer" width="33" height="29" viewBox="0 0 33 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect class="backArrow" x="2.03076" y="10.653" width="30.9692" height="7.69387" rx="3.84694" />
+            <rect class="backArrow" width="18.919" height="6.03329" rx="3.01664" transform="matrix(0.65109 0.759001 -0.65109 0.759001 3.92822 10.0612)"/>
+            <rect class="backArrow" width="18.919" height="6.03329" rx="3.01664" transform="matrix(0.65109 -0.759001 0.65109 0.759001 0 14.3595)"/>
         </svg>
-        <div style="margin-left: auto; margin-right: auto; display: flex; flex-direction: column; justify-content: space-evenly; align-items: center; width:10%">
-            <img src="./assets/delft.png" alt="Logo" style="width: 70%; object-fit: scale-down;">
+        <div id="topContainer" class="flex column jevenly acenter regcenter">
+            <img id="delftImage" src="./assets/delft.png" alt="Logo">
             <h1 id="turnString">Your turn!</h1>
         </div>
     </div>
     <div>
-        <div style="display: flex; flex-direction: row; justify-content: space-evenly; align-items: center;">
-            <div style="display: flex; flex-direction: column; justify-content: space-evenly; align-items: center; width: 15vw;">
-                <h1>You</h1>
-                <div style="width: 10vw; height: 3vw; background: #00A6D6; border-radius: 1vw;">                    
+        <div class="flex row jevenly acenter">
+            <div class="scoreContainer playerOne">
+                <h1 class="playerOne" >You</h1>
+                <div class="playerOne playerColor">                    
                 </div>
-                <h1 id="yourScore">3</h1>
+                <h1 class="playerOne" id="yourScore">3</h1>
             </div>
-            <div style="width: 70vmin; height: 60vmin; background: #1f6f86; border-radius: 1vw;"></div>
-            <div style="display: flex; flex-direction: column; justify-content: space-evenly; align-items: center; width: 15vw;">
-                <h1>Opponent</h1>
-                <div style="width: 10vw; height: 3vw; background: #000000; border-radius: 1vw;">                    
+            <div class="flex row jcenter acenter nwrap" id="gameContainer">
+                <canvas id="c1"></canvas>
+                <canvas id="c2"></canvas>
+                <canvas id="c3"></canvas>
+                <canvas id="c4"></canvas>
+                <canvas id="c5"></canvas>
+                <canvas id="c6"></canvas>
+                <canvas id="c7"></canvas>
+            </div>
+            <div class="scoreContainer playerTwo">
+                <h1 class="playerTwo">Opponent</h1>
+                <div class="playerTwo playerColor">                    
                 </div>
-                <h1 id="opponentScore">1</h1>
+                <h1 class="playerTwo" id="opponentScore">1</h1>
             </div>
         </div>  
     </div>
 </body>
+<footer>
+    <script src="./javascripts/setupGame.js"></script>
+</footer>
 </html>
