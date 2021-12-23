@@ -26,7 +26,7 @@ wss.on("connection", (ws) => {
   ws.send("fasz vagy")
 
   ws.on("message", (msg) => {
-    console.log(msg.toString());
+    console.log(JSON.parse(msg.toJSON().data.map(x => String.fromCharCode(x)).join("")).column);
     return false
   })
 

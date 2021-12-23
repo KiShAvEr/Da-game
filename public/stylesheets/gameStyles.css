@@ -4,7 +4,18 @@ canvas {
   margin: 0;
   padding: 0;
   border: 0;
-  background: #1f6f86;
+  /* background: #1f6f86; */
+  position: relative;
+  z-index: 1;
+}
+
+.canvascontainer {
+  width: 10vmin;
+  height: 60vmin;
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  position: relative;
 }
 
 body {
@@ -51,6 +62,8 @@ body {
 #gameContainer {
   width: 70vmin; 
   height: 60vmin; 
+  border-radius: 1vw;
+  box-shadow: inset 0px 0px 0px 0.4vw #1f6f86;
 }
 
 #delftImage {
@@ -71,6 +84,15 @@ body {
   fill: black
 }
 
+.slots {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 20;
+  max-height: 100%;
+  max-width: 100%;
+  margin: 0;
+}
 
 
 
