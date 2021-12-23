@@ -1,0 +1,43 @@
+html {
+    height: 100%;
+}
+
+#description {
+    width: 30vw;
+    font-size: larger;
+  }
+
+button {
+    width: 30vw;
+    height: 15vw;
+    font-size: xx-large;
+}
+
+table {
+    font-size: larger;
+}
+
+#delftImage {
+    width: 8%; 
+    object-fit: scale-down;
+  }
+
+#container {
+    height: 100%;
+    width: 100%;
+}
+
+.bottom {
+    margin-bottom: 3%;
+    width: 90%;
+}
+
+.top {
+    margin-top: 10vh;
+    margin-bottom: 10vh; 
+    font-size:72px
+}
+
+.stats {
+    padding-right: 20px;
+}

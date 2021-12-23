@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Issagame</title>
     <link rel="stylesheet" href="./stylesheets/gameStyles.css">
+    <link rel="stylesheet" href="./stylesheets/style.css">
 </head>
 <body>
     <div id="backContainer" class="flex row">
@@ -16,7 +17,7 @@
         </svg>
         <div id="topContainer" class="flex column jevenly acenter">
             <img id="delftImage" src="./assets/delft.png" alt="Logo">
-            <h1 id="turnString">Your turn!</h1>
+            <h1 id="turnString">Waiting for an opponent...</h1>
         </div>
         <!-- <svg id="backArrowContainer" width="33" height="29" viewBox="0 0 33 29" fill="none" xmlns="http://www.w3.org/2000/svg"></svg> -->
     </div>
@@ -24,9 +25,9 @@
         <div class="flex row jevenly acenter">
             <div class="scoreContainer flex column jevenly acenter">
                 <h1 >You</h1>
-                <div id="yourColor" class="playerOne playerColor">                    
+                <div id="yourColor" class="playerColor">                    
                 </div>
-                <h1 id="yourScore">3</h1>
+                <h1 id="yourScore">0</h1>
             </div>
             <div class="flex row jcenter acenter nwrap" id="gameContainer">
                 <div id="c0" class="canvascontainer flex column jend acenter"><img id="slots0" class="slots" src="./assets/slots.png" alt="slots"></div>
@@ -39,9 +40,9 @@
             </div>
             <div class="scoreContainer flex column jevenly acenter">
                 <h1 >Opponent</h1>
-                <div id="opponentColor" class="playerTwo playerColor">                    
+                <div id="opponentColor" class="playerColor">                    
                 </div>
-                <h1 id="opponentScore">1</h1>
+                <h1 id="opponentScore">0</h1>
             </div>
         </div>  
     </div>

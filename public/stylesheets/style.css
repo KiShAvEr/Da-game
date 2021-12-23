@@ -1,8 +1,62 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
 a {
   color: #00B7FF;
+}
+
+
+body {
+  margin: 0px; 
+  height: 100%; 
+  width: 100%; 
+  padding: 0%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-style: normal;
+  overflow: hidden;
+}
+
+.jbetween {
+  justify-content: space-between;
+}
+
+
+
+.regcenter {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.flex {
+  display: flex;
+}
+
+.row {
+  flex-direction: row;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.jevenly {
+  justify-content: space-evenly;
+}
+
+.jcenter {
+  justify-content: center;
+}
+
+.acenter {
+  align-items: center;
+}
+
+.nwrap {
+  flex-wrap: nowrap;
+  
+}
+
+.jend {
+  justify-content: flex-end;
+}
+
+.jstart {
+  justify-content: flex-start;
 }

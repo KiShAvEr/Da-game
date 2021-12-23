@@ -5,33 +5,40 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gravitrips</title>
+    <link rel="stylesheet" href="./stylesheets/splashStyles.css">
+    <link rel="stylesheet" href="./stylesheets/style.css">
 </head>
-<body style="width: 100%; height: 100%; overflow: hidden;">
-    <div style="display: flex; justify-content: space-between; flex-direction: column; align-items: center; height: 95vh;">
-        <div style='margin-top: 10vh; margin-bottom: 10vh; font-size:72px'; >
+<body>
+    <div id = "container" class="flex jbetween acenter column">
+        <div class="flex column jstart acenter top">
+            <img id="delftImage" src="./assets/delft.png" alt="Logo">
             G_R_A_V_I_T_R_I_P_S
         </div>
         <div>
-            <button onclick="window.open('http://localhost:3000/board', '_self')">Play</button>
+            <button id = "button">Play</button>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-direction: row; width: 90%; ">
-            <div>
-                    A leírás
+        <div class="flex jbetween acenter row bottom">
+            <div id="description">
+                    Connect four pieces of your color horizontally, vertically or diagonally!
+                    Watch out for gravity though! OOOOoooooo
             </div>
             <div>
                 <table>
                     <tr>
-                        <td style="padding-right: 20px;">a</td><td>01</td>
+                        <td class = "stats">Completed games:</td><td id="completed">0</td>
                     </tr>
                     <tr>
-                        <td style="padding-right: 20px;">b</td><td>03211</td>
+                        <td class = "stats">Ongoing games:</td><td id="ongoing">0</td>
                     </tr>
                     <tr>
-                        <td style="padding-right: 20px;">c</td><td>01031</td>
+                        <td class = "stats">Fastest victory</td><td id="fastest">0 moves</td>
                     </tr>
                 </table>
             </div>
         </div>
     </div>
 </body>
+<footer>
+    <script src="./javascripts/splash.js"></script>
+</footer>
 </html>

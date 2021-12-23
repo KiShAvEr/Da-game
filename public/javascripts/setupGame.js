@@ -6,6 +6,10 @@ const opponentColor = document.getElementById("opponentColor")
 
 let ownPlayer;
 
+let closed = false
+
+const socket = new WebSocket(window.location.href.replace("http", "ws"))
+
 const drawGameState = (lastMove) => {
     if(lastMove) {
         const parent = document.getElementById(`c${lastMove.col}`)
@@ -14,13 +18,12 @@ const drawGameState = (lastMove) => {
 
         parent.prepend(child)
 
-
-        
     }
 }
 
 backArrowContainer.addEventListener("click", () => {
-    window.open(window.location.href.replace("board", ""), "_self")
+    closed = true
+    if(socket) socket.close()
 })
 
 backArrowContainer.addEventListener("mouseenter", () => {
@@ -35,7 +38,10 @@ backArrowContainer.addEventListener("mouseleave", () => {
     }
 })
 
-const socket = new WebSocket("ws://localhost:3000")
+
+fetch(window.location.href.replace("board", "data"))
+.then(data => data.json())
+.then(res => console.log(res))
 
 socket.onopen = (ev) => {
     //socket.send("mi a péló van")
@@ -45,7 +51,6 @@ socket.onopen = (ev) => {
 socket.onmessage = (ev) => {
     switch(ev.data) {
         case "waiting": {
-            alert("waiting")
             break
         }
         case "playerOne": {
@@ -76,14 +81,47 @@ socket.onmessage = (ev) => {
         default: {
             const currentState = JSON.parse(ev.data).gameState
             if(JSON.parse(ev.data).error != null) alert("cringe")
+            if(currentState.lastMove === null) {
+                Array.from(document.getElementsByClassName("token")).forEach(el => el.parentNode.removeChild(el))
+            }
             table = currentState.board
             document.getElementById("yourScore").innerHTML = currentState.wins[ownPlayer]
             document.getElementById("opponentScore").innerHTML = currentState.wins[ownPlayer == "playerOne"? "playerTwo": "playerOne"]
-
+            
             const yourTurn = (currentState.playerOneTurn && ownPlayer == "playerOne") || (!currentState.playerOneTurn && ownPlayer == "playerTwo")
+            
+            
+            if(currentState.winner != 0) {
+                document.getElementById("turnString").innerHTML = (currentState.winner == 1 && ownPlayer == "playerOne") || (currentState.winner == 2 && ownPlayer == "playerTwo")
+                ? "You won!" 
+                :  currentState.winner == -1
+                    ? "Issadrawwa"
+                    : "You lost :(" 
+                    for (let i = 0; i < 7; i++) {
+                        let name = "slots" + i;
+                        const currentCanvas = document.getElementById(name);
+                        currentCanvas.replaceWith(currentCanvas.cloneNode(true))
+                    } 
 
-            console.log(yourTurn, ownPlayer, currentState.playerOneTurn)
+                console.log(currentState.lastMove)
 
+                drawGameState(currentState.lastMove)
+
+                setTimeout(() => {
+                    const rematch = confirm("Wanna rematch")
+
+                    socket.send(JSON.stringify({actionName: "rematch", action: rematch}))
+
+                    if(!rematch) {
+                        closed = true
+                        socket.close()
+                    }
+
+                }, 500)
+
+                break
+            }
+            
             switch(yourTurn) {
                 case true: {
                     document.getElementById("turnString").innerHTML = "Your turn!"
@@ -130,5 +168,6 @@ socket.onmessage = (ev) => {
 }
 
 socket.onclose = (ev) => {
-    console.log("what", ev)
+    if(!closed) alert("Opponent disconnected")
+    window.location.href = window.location.href.replace("board", "")
 }

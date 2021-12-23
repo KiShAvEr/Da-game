@@ -8,12 +8,6 @@
   overflow: visible;
 }
 
-body {
-  margin: 0px; 
-  height: 100%; 
-  width: 100%; 
-  padding: 0%;
-}
 
 #topContainer {
   width: 50%;
@@ -35,18 +29,26 @@ body {
   width: 15vw;
 }
 
+
+
+.playerColor {
+  width: 10vw; 
+  height: 3vw; 
+  border-radius: 1vw;
+  background: #1f6f86;
+}
+
+#delftImage {
+  width: 15%; 
+  object-fit: scale-down;
+}
+
 .playerOne {
   background: #00A6D6
 }
 
 .playerTwo {
   background: #000000
-}
-
-.playerColor {
-  width: 10vw; 
-  height: 3vw; 
-  border-radius: 1vw;
 }
 
 #gameContainer {
@@ -56,10 +58,6 @@ body {
   box-shadow: inset 0px 0px 0px 1vmin #1f6f86;
 }
 
-#delftImage {
-  width: 15%; 
-  object-fit: scale-down;
-}
 
 #backContainer {
   width: 100%;
@@ -94,39 +92,3 @@ body {
 
 
 
-.regcenter {
-  margin-right: auto;
-  margin-left: auto;
-}
-
-.flex {
-  display: flex;
-}
-
-.row {
-  flex-direction: row;
-}
-
-.column {
-  flex-direction: column;
-}
-
-.jevenly {
-  justify-content: space-evenly;
-}
-
-.jcenter {
-  justify-content: center;
-}
-
-.acenter {
-  align-items: center;
-}
-
-.nwrap {
-  flex-wrap: nowrap;
-}
-
-.jend {
-  justify-content: flex-end;
-}
