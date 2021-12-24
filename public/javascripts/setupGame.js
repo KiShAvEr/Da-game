@@ -66,89 +66,98 @@ socket.onmessage = (ev) => {        //if we receive a message
             break
         }
         default: {      //in every other case, it's a new game state being received
-            const currentState = JSON.parse(ev.data).gameState
-            const yourTurn = (currentState.playerOneTurn && ownPlayer == "playerOne") || (!currentState.playerOneTurn && ownPlayer == "playerTwo")
-
-            if(JSON.parse(ev.data).error != null) alert("cringe")   //alert if there is an error
-            if(currentState.lastMove === null) {                    //if this is going to be the first step of a new game
-                Array.from(document.getElementsByClassName("token")).forEach(el => el.parentNode.removeChild(el))  //remove all tokens from the board
-            }
-
-            table = currentState.board          //save the game state sent by the server
-            document.getElementById("yourScore").innerHTML = currentState.wins[ownPlayer]       //assign scores
-            document.getElementById("opponentScore").innerHTML = currentState.wins[ownPlayer == "playerOne"? "playerTwo": "playerOne"]
-            
-            
-            if(currentState.winner != 0) {  //if the game is over, change the string on top accordingly
-                document.getElementById("turnString").innerHTML = 
-                    (currentState.winner == 1 && ownPlayer == "playerOne") || (currentState.winner == 2 && ownPlayer == "playerTwo")
-                        ? "You won!" 
-                        :  currentState.winner == -1
-                            ? "Issadrawwa"
-                            : "You lost :(" 
-
-                for (let i = 0; i < 7; i++) {   //also, disable the clickable board
-                    let name = "slots" + i;
-                    document.getElementById(name).replaceWith(currentCanvas.cloneNode(true))
-                } 
-
-                drawGameState(currentState.lastMove)
-
-                setTimeout(() => {
-                    const rematch = confirm("Wanna rematch")
-
-                    socket.send(JSON.stringify({actionName: "rematch", action: rematch}))
-
-                    if(!rematch) {
-                        closed = true
-                        socket.close()
-                    }
-
-                }, 500)
-
-                break
-            }
-            
-            switch(yourTurn) {
-                case true: {
-                    document.getElementById("turnString").innerHTML = "Your turn!"
-                    for (let i = 0; i < 7; i++) {
-                        let name = "slots" + i;
-                        const currentCanvas = document.getElementById(name);
-                        currentCanvas.addEventListener("mouseenter", () => {
-                            if (table[i][0] == 0){
-                                currentCanvas.src = "./assets/slotsdark.png"
-                            }
-                        }) 
-                        currentCanvas.addEventListener("mouseleave", () => {
-                            currentCanvas.src = "./assets/slots.png"
-                        })
-                        currentCanvas.addEventListener("click", () => {
-                            if (table[i][0] == 0){
-                                console.log("ball dropped in canvas " + i)
-                                table[i].push("x")
-                                socket.send(JSON.stringify({"action": i, "actionName": "drop"}))
-                                currentCanvas.src = "./assets/slots.png"
-                            }
-                        })   
-                    } 
+            switch(JSON.parse(ev.data).gameState) {
+                case undefined:
+                    document.getElementById("inviteLink").innerHTML = "Invite link: " + window.location.href.replace("lobby", JSON.parse(ev.data).lobby)
                     break
-                }
-                case false: {
-                    document.getElementById("turnString").innerHTML = "Opponent's turn!"
-                    for (let i = 0; i < 7; i++) {
-                        let name = "slots" + i;
-                        const currentCanvas = document.getElementById(name);
-                        currentCanvas.replaceWith(currentCanvas.cloneNode(true))
-                    } 
-                    break
-                }
+                
                 default: {
-                    console.error("what")
+                    const currentState = JSON.parse(ev.data).gameState
+                    const yourTurn = (currentState.playerOneTurn && ownPlayer == "playerOne") || (!currentState.playerOneTurn && ownPlayer == "playerTwo")
+        
+                    if(JSON.parse(ev.data).error != null) alert("cringe")   //alert if there is an error
+                    if(currentState.lastMove === null) {                    //if this is going to be the first step of a new game
+                        Array.from(document.getElementsByClassName("token")).forEach(el => el.parentNode.removeChild(el))  //remove all tokens from the board
+                    }
+        
+                    table = currentState.board          //save the game state sent by the server
+                    document.getElementById("yourScore").innerHTML = currentState.wins[ownPlayer]       //assign scores
+                    document.getElementById("opponentScore").innerHTML = currentState.wins[ownPlayer == "playerOne"? "playerTwo": "playerOne"]
+                    
+                    
+                    if(currentState.winner != 0) {  //if the game is over, change the string on top accordingly
+                        document.getElementById("turnString").innerHTML = 
+                            (currentState.winner == 1 && ownPlayer == "playerOne") || (currentState.winner == 2 && ownPlayer == "playerTwo")
+                                ? "You won!" 
+                                :  currentState.winner == -1
+                                    ? "Issadrawwa"
+                                    : "You lost :(" 
+        
+                        for (let i = 0; i < 7; i++) {   //also, disable the clickable board
+                            let name = "slots" + i;
+                            document.getElementById(name).replaceWith(currentCanvas.cloneNode(true))
+                        } 
+        
+                        drawGameState(currentState.lastMove)
+        
+                        setTimeout(() => {
+                            const rematch = confirm("Wanna rematch")
+        
+                            socket.send(JSON.stringify({actionName: "rematch", action: rematch}))
+        
+                            if(!rematch) {
+                                closed = true
+                                socket.close()
+                            }
+        
+                        }, 500)
+        
+                        break
+                    }
+                    
+                    switch(yourTurn) {
+                        case true: {
+                            document.getElementById("turnString").innerHTML = "Your turn!"
+                            for (let i = 0; i < 7; i++) {
+                                let name = "slots" + i;
+                                const currentCanvas = document.getElementById(name);
+                                currentCanvas.addEventListener("mouseenter", () => {
+                                    if (table[i][0] == 0){
+                                        currentCanvas.src = "./assets/slotsdark.png"
+                                    }
+                                }) 
+                                currentCanvas.addEventListener("mouseleave", () => {
+                                    currentCanvas.src = "./assets/slots.png"
+                                })
+                                currentCanvas.addEventListener("click", () => {
+                                    if (table[i][0] == 0){
+                                        console.log("ball dropped in canvas " + i)
+                                        table[i].push("x")
+                                        socket.send(JSON.stringify({"action": i, "actionName": "drop"}))
+                                        currentCanvas.src = "./assets/slots.png"
+                                    }
+                                })   
+                            } 
+                            break
+                        }
+                        case false: {
+                            document.getElementById("turnString").innerHTML = "Opponent's turn!"
+                            for (let i = 0; i < 7; i++) {
+                                let name = "slots" + i;
+                                const currentCanvas = document.getElementById(name);
+                                currentCanvas.replaceWith(currentCanvas.cloneNode(true))
+                            } 
+                            break
+                        }
+                        default: {
+                            console.error("what")
+                        }
+                    }
+        
+                    drawGameState(currentState.lastMove)
+                    break
                 }
             }
-
-            drawGameState(currentState.lastMove)
         }
     }
     return false
@@ -156,5 +165,5 @@ socket.onmessage = (ev) => {        //if we receive a message
 
 socket.onclose = (ev) => {
     if(!closed) alert("Opponent disconnected")
-    window.location.href = window.location.href.replace("board", "")
+    window.location.href = /^((http:\/\/)|(https:\/\/)){1}.+((\.)|(:)){1}.+\//.exec(window.location.href)[0]
 }

@@ -1,6 +1,7 @@
 const express = require('express')
 const http = require('http')
 const webSocket = require("ws")
+const {createHash} = require('crypto')
 
 class GameState {
   constructor() {
@@ -148,7 +149,11 @@ app.get("/", (req, res) => {
   res.sendFile([__dirname, "/public/splash.html"].join(""))
 })
 
-app.get("/board", (req, res) => {
+app.get("/data", (req,res) => {
+  res.send({completed, ongoing: Object.keys(games).length/2, fastest})
+})
+
+app.get("/*", (req, res) => {
   res.sendFile([__dirname, "/public/game.html"].join(""))
 })
 
@@ -156,11 +161,13 @@ const server = http.createServer(app)
 
 server.listen(port)
 
-const wss = new webSocket.Server({server})
+const wss = new webSocket.Server({noServer: true})
 
 let counter = 0
 
 let queue = []
+
+let lobbies = {}
 
 let completed = 0
 
@@ -191,46 +198,93 @@ setInterval(() => {
 
 let games = {}
 
-wss.on("connection", (ws) => {
+server.on("upgrade", (req, sock, head) => {
+  wss.handleUpgrade(req, sock, head, (ws) => {
+    wss.emit("connection", ws, req.url)
+  })
+  
+})
 
+wss.on("connection", (ws, url) => {
   const con = ws
 
   con.id = counter++
-
+  
   con.wantsToRematch = undefined;
 
-  if(queue.length == 0) {
-    queue.push(con)
+  if(url === "/board") {
+     
+    if(queue.length == 0) {
+      queue.push(con)
+      con.send("waiting")
+    }
+    else {
+      const otherPlayer = queue.shift()
+      let game
+      const order = Math.floor(Math.random()*2)
+      switch(order) {
+        case 0: {
+          game = new Game(con, otherPlayer)
+          con.send("playerOne")
+          otherPlayer.send("playerTwo")
+          break;
+        }
+        case 1: {
+          game = new Game(otherPlayer, con) 
+          con.send("playerTwo")
+          otherPlayer.send("playerOne")
+          break;
+        }
+      }
+      games[otherPlayer.id] = game
+      games[con.id] = game
+      con.send(JSON.stringify({
+        "gameState": game.gameState,
+        "error": null
+      }))
+      otherPlayer.send(JSON.stringify({
+        "gameState": game.gameState,
+        "error": null
+      }))
+    }
+  }
+
+  else if(url === "/lobby") {
+    lobbies[createHash("sha512").update(con.id.toString()).digest("base64url").substring(0, 12)] = con
+    con.send(JSON.stringify({"lobby": createHash("sha512").update(con.id.toString()).digest("base64url").substring(0, 12)}))
     con.send("waiting")
   }
   else {
-    const otherPlayer = queue.shift()
-    let game
-    const order = Math.floor(Math.random()*2)
-    switch(order) {
-      case 0: {
-        game = new Game(con, otherPlayer)
-        con.send("playerOne")
-        otherPlayer.send("playerTwo")
-        break;
+    if(lobbies[url.substring(1)]) {
+      const otherPlayer = lobbies[url.substring(1)]
+      delete lobbies[url.substring(1)]
+      let game
+      const order = Math.floor(Math.random()*2)
+      switch(order) {
+        case 0: {
+          game = new Game(con, otherPlayer)
+          con.send("playerOne")
+          otherPlayer.send("playerTwo")
+          break;
+        }
+        case 1: {
+          game = new Game(otherPlayer, con) 
+          con.send("playerTwo")
+          otherPlayer.send("playerOne")
+          break;
+        }
       }
-      case 1: {
-        game = new Game(otherPlayer, con) 
-        con.send("playerTwo")
-        otherPlayer.send("playerOne")
-        break;
-      }
+      games[otherPlayer.id] = game
+      games[con.id] = game
+      con.send(JSON.stringify({
+        "gameState": game.gameState,
+        "error": null
+      }))
+      otherPlayer.send(JSON.stringify({
+        "gameState": game.gameState,
+        "error": null
+      }))
     }
-    games[otherPlayer.id] = game
-    games[con.id] = game
-    con.send(JSON.stringify({
-      "gameState": game.gameState,
-      "error": null
-    }))
-    otherPlayer.send(JSON.stringify({
-      "gameState": game.gameState,
-      "error": null
-    }))
   }
 
   con.onmessage = (ev) => {
@@ -282,12 +336,9 @@ wss.on("connection", (ws) => {
     }
   }
 
-  return false
 })
 
-app.get("/data", (req,res) => {
-  res.send({completed, ongoing: Object.keys(games).length/2, fastest})
-})
+
 
 
 console.log(`Server running on port ${port}`)

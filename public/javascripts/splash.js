@@ -24,7 +24,7 @@ setInterval(() => {
     document.getElementById("completed").innerHTML = data.completed
     document.getElementById("ongoing").innerHTML = data.ongoing
     document.getElementById("fastest").innerHTML = data.fastest + " moves"
-}, 2000)
+}, 3000)
 
 document.getElementById("button").onclick = () => {
     window.location.href = [window.location.href, "board"].join("")
