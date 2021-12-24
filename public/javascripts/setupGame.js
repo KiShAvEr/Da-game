@@ -1,59 +1,46 @@
-const backArrowContainer = document.getElementById("backArrowContainer")
-let table = [[],[],[],[],[],[],[]]
-
+const backArrowContainer = document.getElementById("backArrowContainer")    //setting up constants
 const ownColor = document.getElementById("yourColor")
 const opponentColor = document.getElementById("opponentColor")
-
-let ownPlayer;
-
-let closed = false
-
 const socket = new WebSocket(window.location.href.replace("http", "ws"))
 
-const drawGameState = (lastMove) => {
+let table = [[],[],[],[],[],[],[]]      //this will store the current board state
+let ownPlayer;                          //playerOne or playerTwo
+let closed = false                      //keeps track of whether this user has closed a connection (to alert opponent)
+
+
+const drawGameState = (lastMove) => {   //updating the board with the given last move
     if(lastMove) {
         const parent = document.getElementById(`c${lastMove.col}`)
         const child = document.createElement("div")
         child.classList.add(lastMove.player, "token")
-
         parent.prepend(child)
-
     }
 }
 
-backArrowContainer.addEventListener("click", () => {
+backArrowContainer.addEventListener("click", () => {    //close the connection if the user clicks the back button
     closed = true
     if(socket) socket.close()
 })
 
-backArrowContainer.addEventListener("mouseenter", () => {
+
+
+backArrowContainer.addEventListener("mouseenter", () => {       //make the back button a bit more interactive
     for(let element of document.getElementsByClassName("backArrow")) {
         element.style.fill = "gray"
     }
 })
-
 backArrowContainer.addEventListener("mouseleave", () => {
     for(let element of document.getElementsByClassName("backArrow")) {
         element.style.fill = "black"
     }
 })
 
-
-fetch(window.location.href.replace("board", "data"))
-.then(data => data.json())
-.then(res => console.log(res))
-
-socket.onopen = (ev) => {
-    //socket.send("mi a péló van")
-    return false
-}
-
-socket.onmessage = (ev) => {
-    switch(ev.data) {
-        case "waiting": {
+socket.onmessage = (ev) => {        //if we receive a message
+    switch(ev.data) {      
+        case "waiting": {               //placeholder for when we have to wait for an opponent
             break
         }
-        case "playerOne": {
+        case "playerOne": {             //playerOne and playerTwo signify which player you are, this part sets up the game accordingly
             ownColor.classList.remove("playerTwo")
             ownColor.classList.add("playerOne")
 
@@ -78,32 +65,32 @@ socket.onmessage = (ev) => {
 
             break
         }
-        default: {
+        default: {      //in every other case, it's a new game state being received
             const currentState = JSON.parse(ev.data).gameState
-            if(JSON.parse(ev.data).error != null) alert("cringe")
-            if(currentState.lastMove === null) {
-                Array.from(document.getElementsByClassName("token")).forEach(el => el.parentNode.removeChild(el))
+            const yourTurn = (currentState.playerOneTurn && ownPlayer == "playerOne") || (!currentState.playerOneTurn && ownPlayer == "playerTwo")
+
+            if(JSON.parse(ev.data).error != null) alert("cringe")   //alert if there is an error
+            if(currentState.lastMove === null) {                    //if this is going to be the first step of a new game
+                Array.from(document.getElementsByClassName("token")).forEach(el => el.parentNode.removeChild(el))  //remove all tokens from the board
             }
-            table = currentState.board
-            document.getElementById("yourScore").innerHTML = currentState.wins[ownPlayer]
+
+            table = currentState.board          //save the game state sent by the server
+            document.getElementById("yourScore").innerHTML = currentState.wins[ownPlayer]       //assign scores
             document.getElementById("opponentScore").innerHTML = currentState.wins[ownPlayer == "playerOne"? "playerTwo": "playerOne"]
             
-            const yourTurn = (currentState.playerOneTurn && ownPlayer == "playerOne") || (!currentState.playerOneTurn && ownPlayer == "playerTwo")
             
-            
-            if(currentState.winner != 0) {
-                document.getElementById("turnString").innerHTML = (currentState.winner == 1 && ownPlayer == "playerOne") || (currentState.winner == 2 && ownPlayer == "playerTwo")
-                ? "You won!" 
-                :  currentState.winner == -1
-                    ? "Issadrawwa"
-                    : "You lost :(" 
-                    for (let i = 0; i < 7; i++) {
-                        let name = "slots" + i;
-                        const currentCanvas = document.getElementById(name);
-                        currentCanvas.replaceWith(currentCanvas.cloneNode(true))
-                    } 
+            if(currentState.winner != 0) {  //if the game is over, change the string on top accordingly
+                document.getElementById("turnString").innerHTML = 
+                    (currentState.winner == 1 && ownPlayer == "playerOne") || (currentState.winner == 2 && ownPlayer == "playerTwo")
+                        ? "You won!" 
+                        :  currentState.winner == -1
+                            ? "Issadrawwa"
+                            : "You lost :(" 
 
-                console.log(currentState.lastMove)
+                for (let i = 0; i < 7; i++) {   //also, disable the clickable board
+                    let name = "slots" + i;
+                    document.getElementById(name).replaceWith(currentCanvas.cloneNode(true))
+                } 
 
                 drawGameState(currentState.lastMove)
 
