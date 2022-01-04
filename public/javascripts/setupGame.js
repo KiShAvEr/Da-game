@@ -95,6 +95,7 @@ socket.onmessage = (ev) => {        //if we receive a message
         
                         for (let i = 0; i < 7; i++) {   //also, disable the clickable board
                             let name = "slots" + i;
+                            const currentCanvas = document.getElementById(name);
                             document.getElementById(name).replaceWith(currentCanvas.cloneNode(true))
                         } 
         

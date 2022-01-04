@@ -24,11 +24,18 @@
         <div>
             <div id="statsContainer">
                 <div class = "stats">Completed games:</div>
-                <div id="completed">0</div>
+                <%= completed %>
                 <div class = "stats">Ongoing games:</div>
-                <div id="ongoing">0</div>
+                <%= ongoing %>
                 <div class = "stats">Fastest victory</div>
-                <div id="fastest">0 moves</div>
+                <div>
+                    <%= fastest %>
+                    <%if (fastest == 1) { %>
+                        move
+                    <%} else { %>
+                        moves
+                    <%} %>
+                </div>
             </div>
         </div>
     </div>

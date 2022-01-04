@@ -11,6 +11,30 @@ button {
     width: 30vw;
     height: 15vw;
     font-size: xx-large;
+    margin-bottom: 20vh;
+}
+
+button:active {
+    color: #1F305E
+}
+
+#description {
+    position: absolute;
+    left: 50px;
+    bottom: 50px;
+}
+
+#statsContainer {
+    position: absolute;
+    right: 50px;
+    bottom: 50px;
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+#bottomContainer {
+    width: 100%;
+    height: 10vh;
 }
 
 table {

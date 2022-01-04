@@ -82,7 +82,41 @@ class Game {
   }
 }
 
-checkWin = (board) => {
+const checkWin = (board) => {
+
+  const checkTheVertical = (board) => {
+    for(let col of board) {
+      for(let i = 0; i < 3; i++) {
+        if(col[i] != 0 && col[i] == col[i+1] && col[i] == col[i+2] && col[i] == col[i+3]) return col[i]
+      }
+    }
+    return 0
+  }
+  
+  const checkTheHorizontal = (board) => {
+    for(let i = 0; i < 4; i++) {
+      for(let j = 0; j < 6; j++) {
+        if(board[i][j] != 0 && board[i][j] == board[i+1][j] && board[i][j] == board[i+2][j] && board[i][j] == board[i+3][j]) return board[i][j]
+      }
+    }
+    return 0
+  }
+  
+  const checkTheDiagonal = (board) => {
+    for(let i = 0; i < 4; i++) {
+      for(let j = 0; j < 3; j++) {
+        if(board[i][j] != 0 && board[i][j] == board[i+1][j+1] && board[i][j] == board[i+2][j+2] && board[i][j] == board[i+3][j+3]) return board[i][j]
+      }
+    }
+    for(let i = 3; i < 7; i++) {
+      for(let j = 0; j < 3; j++) {
+        if(board[i][j] != 0 && board[i][j] == board[i-1][j+1] && board[i][j] == board[i-2][j+2] && board[i][j] == board[i-3][j+3]) return board[i][j]
+      }
+    }
+    return 0
+  }
+
+
   const diagonal = checkTheDiagonal(board)          //3000000
   const vertical = checkTheVertical(board)
   const horizontal = checkTheHorizontal(board)
@@ -107,46 +141,15 @@ checkWin = (board) => {
 
 }
 
-checkTheVertical = (board) => {
-  for(let col of board) {
-    for(let i = 0; i < 3; i++) {
-      if(col[i] != 0 && col[i] == col[i+1] && col[i] == col[i+2] && col[i] == col[i+3]) return col[i]
-    }
-  }
-  return 0
-}
-
-checkTheHorizontal = (board) => {
-  for(let i = 0; i < 4; i++) {
-    for(let j = 0; j < 6; j++) {
-      if(board[i][j] != 0 && board[i][j] == board[i+1][j] && board[i][j] == board[i+2][j] && board[i][j] == board[i+3][j]) return board[i][j]
-    }
-  }
-  return 0
-}
-
-checkTheDiagonal = (board) => {
-  for(let i = 0; i < 4; i++) {
-    for(let j = 0; j < 3; j++) {
-      if(board[i][j] != 0 && board[i][j] == board[i+1][j+1] && board[i][j] == board[i+2][j+2] && board[i][j] == board[i+3][j+3]) return board[i][j]
-    }
-  }
-  for(let i = 3; i < 7; i++) {
-    for(let j = 0; j < 3; j++) {
-      if(board[i][j] != 0 && board[i][j] == board[i-1][j+1] && board[i][j] == board[i-2][j+2] && board[i][j] == board[i-3][j+3]) return board[i][j]
-    }
-  }
-  return 0
-}
-
 
 const port = process.env.PORT || process.argv[2] || 3000
 const app = express()
 
 app.use(express.static(__dirname + "/public"))
 
+app.set("view engine", "ejs")
 app.get("/", (req, res) => {
-  res.sendFile([__dirname, "/public/splash.html"].join(""))
+  res.render([__dirname, "/public/splash.ejs"].join(""), {completed, fastest, ongoing: Object.keys(games).length/2})
 })
 
 app.get("/data", (req,res) => {
@@ -200,19 +203,20 @@ let games = {}
 
 server.on("upgrade", (req, sock, head) => {
   wss.handleUpgrade(req, sock, head, (ws) => {
-    wss.emit("connection", ws, req.url)
+    wss.emit("connection", ws, req)
   })
   
 })
 
-wss.on("connection", (ws, url) => {
-  const con = ws
+wss.on("connection", (ws, req) => {
+  const con = {
+    ...ws,
+    id: counter++,
+    wantsToRematch: undefined,
+    send: ws.send
+  }
 
-  con.id = counter++
-  
-  con.wantsToRematch = undefined;
-
-  if(url === "/board") {
+  if(req.url === "/board") {
      
     if(queue.length == 0) {
       queue.push(con)
@@ -249,15 +253,15 @@ wss.on("connection", (ws, url) => {
     }
   }
 
-  else if(url === "/lobby") {
+  else if(req.url === "/lobby") {
     lobbies[createHash("sha512").update(con.id.toString()).digest("base64url").substring(0, 12)] = con
     con.send(JSON.stringify({"lobby": createHash("sha512").update(con.id.toString()).digest("base64url").substring(0, 12)}))
     con.send("waiting")
   }
   else {
-    if(lobbies[url.substring(1)]) {
-      const otherPlayer = lobbies[url.substring(1)]
-      delete lobbies[url.substring(1)]
+    if(lobbies[req.url.substring(1)]) {
+      const otherPlayer = lobbies[req.url.substring(1)]
+      delete lobbies[req.url.substring(1)]
       let game
       const order = Math.floor(Math.random()*2)
       switch(order) {
@@ -288,6 +292,9 @@ wss.on("connection", (ws, url) => {
   }
 
   con.onmessage = (ev) => {
+    if(typeof ev.data != "string") {
+      return
+    }
     const data = JSON.parse(ev.data)
     switch(data.actionName) {
       case "drop": {
