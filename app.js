@@ -209,12 +209,7 @@ server.on("upgrade", (req, sock, head) => {
 })
 
 wss.on("connection", (ws, req) => {
-  const con = {
-    ...ws,
-    id: counter++,
-    wantsToRematch: undefined,
-    send: ws.send
-  }
+  const con = Object.assign(ws, {id: counter++, wantsToRematch: undefined})
 
   if(req.url === "/board") {
      
@@ -253,9 +248,21 @@ wss.on("connection", (ws, req) => {
     }
   }
 
-  else if(req.url === "/lobby") {
-    lobbies[createHash("sha512").update(con.id.toString()).digest("base64url").substring(0, 12)] = con
-    con.send(JSON.stringify({"lobby": createHash("sha512").update(con.id.toString()).digest("base64url").substring(0, 12)}))
+  else if(req.url.substring(0, 6) === "/lobby") {
+    const lobbyName = new URLSearchParams(req.url.substring(7)).get("name")
+    if(!lobbyName) {
+      lobbies[createHash("sha512").update(con.id.toString()).digest("base64url").substring(0, 12)] = con
+      con.send(JSON.stringify({"lobby": createHash("sha512").update(con.id.toString()).digest("base64url").substring(0, 12)}))
+    }
+    else {
+      if(lobbies[lobbyName]) {
+        con.close(4000, "taken")
+      }
+      else {
+        lobbies[lobbyName] = con
+        con.send(JSON.stringify({"lobby": lobbyName}))
+      }
+    }
     con.send("waiting")
   }
   else {
@@ -330,11 +337,11 @@ wss.on("connection", (ws, req) => {
 
     if(game) {
       if(game.playerOne.readyState != 2 && game.playerOne.readyState != 3) {
-        game.playerOne.close()
+        game.playerOne.close(4001, "disconnect")
       }
   
       if(game.playerTwo.readyState != 2 && game.playerTwo.readyState != 3) {
-        game.playerTwo.close()
+        game.playerTwo.close(4001, "disconnect")
       }
 
       delete games[game.playerOne.id]

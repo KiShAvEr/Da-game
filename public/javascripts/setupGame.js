@@ -67,9 +67,10 @@ socket.onmessage = (ev) => {        //if we receive a message
         }
         default: {      //in every other case, it's a new game state being received
             switch(JSON.parse(ev.data).gameState) {
-                case undefined:
-                    document.getElementById("inviteLink").innerHTML = "Invite link: " + window.location.href.replace("lobby", JSON.parse(ev.data).lobby)
+                case undefined: {
+                    document.getElementById("inviteLink").innerHTML = "Invite link: " + window.location.origin + "/" + JSON.parse(ev.data).lobby
                     break
+                }
                 
                 default: {
                     const currentState = JSON.parse(ev.data).gameState
@@ -164,7 +165,12 @@ socket.onmessage = (ev) => {        //if we receive a message
     return false
 }
 
-socket.onclose = (ev) => {
-    if(!closed) alert("Opponent disconnected")
-    window.location.href = /^((http:\/\/)|(https:\/\/)){1}.+((\.)|(:)){1}.+\//.exec(window.location.href)[0]
+
+
+socket.onclose = (/** @type {CloseEvent} */ ev) => {
+    console.log(ev)
+    if(ev.reason == "taken") alert("Lobby name is already taken")
+    else if(ev.reason == "disconnect") alert("Opponent disconnected")
+    else if(!closed) alert("Unexpected error in bagging area")
+    window.location.href = window.location.origin
 }
