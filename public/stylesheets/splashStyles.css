@@ -2,24 +2,47 @@ html {
     height: 100%;
 }
 
+div {
+    font-size: 2vmin;
+}
+
 #description {
     width: 30vw;
-    font-size: larger;
+    font-size: 2vmin;
   }
 
 button {
-    width: 30vw;
-    height: 15vw;
-    border-radius: 2vw;
+    width: 13vw;
+    height: 9vw;
+    border-radius: 1vw;
     background: #00A6D6;
     color: white;
     text-transform: uppercase;
-    font-size: xx-large;
-    margin-bottom: 20vh;
+    font-size: 2vw;
+}
+
+button:hover {
+    background: #1f6f86;
 }
 
 button:active {
     color: #1F305E
+}
+
+button::before {
+    content: "🦀\A";
+    white-space: pre-wrap;
+}
+
+#buttons {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 1vw;
+    row-gap: 1vh;
+    height: 10vh;
+    align-content: center;
+    position: absolute;
+    top: 45vh;
 }
 
 #description {
@@ -41,10 +64,6 @@ button:active {
     height: 10vh;
 }
 
-table {
-    font-size: larger;
-}
-
 #delftImage {
     width: 8%; 
     object-fit: scale-down;
@@ -63,9 +82,14 @@ table {
 .top {
     margin-top: 10vh;
     margin-bottom: 10vh; 
-    font-size:72px
+    font-size:7vmin
 }
 
 .stats {
     padding-right: 20px;
+    font-size: 2vmin;
+}
+
+.stats::after {
+    content: ":"
 }
