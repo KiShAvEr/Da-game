@@ -83,9 +83,11 @@
 }
 
 .token {
-  width: 10vmin;
-  height: 10vmin;
-  border-radius: 5vmin;
+  width: 8vmin;
+  height: 8vmin;
+  min-height: 8vmin;
+  border-radius: 4vmin;
+  margin: 1vmin;
   position: relative;
   z-index: 1;
   animation: tokenfall 0.5s ease-in 1;
@@ -93,10 +95,10 @@
 
 @keyframes tokenfall{
   from {
-    margin-bottom: 600%;
+    margin-bottom: 1000%;
   }
   to {
-    margin-bottom: 0;
+    margin-bottom: 1vmin;
   }
 }
 

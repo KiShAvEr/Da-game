@@ -112,7 +112,7 @@ socket.onmessage = (ev) => {        //if we receive a message
                                 socket.close()
                             }
         
-                        }, 500)
+                        }, 750)
         
                         break
                     }

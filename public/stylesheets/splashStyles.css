@@ -10,6 +10,10 @@ html {
 button {
     width: 30vw;
     height: 15vw;
+    border-radius: 2vw;
+    background: #00A6D6;
+    color: white;
+    text-transform: uppercase;
     font-size: xx-large;
     margin-bottom: 20vh;
 }
