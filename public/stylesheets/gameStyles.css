@@ -88,6 +88,16 @@
   border-radius: 5vmin;
   position: relative;
   z-index: 1;
+  animation: tokenfall 0.5s ease-in 1;
+}
+
+@keyframes tokenfall{
+  from {
+    margin-bottom: 600%;
+  }
+  to {
+    margin-bottom: 0;
+  }
 }
 
 
