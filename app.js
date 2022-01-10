@@ -133,14 +133,12 @@ class GameState {
 }
 
 
-class Game {
-  constructor(p1, p2) {
-    this.playerOne = p1
-    this.playerTwo = p2
-    this.gameState = new GameState()
-  }
-}
 
+function Game(p1, p2) {
+  this.playerOne = p1
+  this.playerTwo = p2
+  this.gameState = new GameState()
+}
 
 
 
