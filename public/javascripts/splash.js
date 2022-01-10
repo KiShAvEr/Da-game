@@ -3,13 +3,13 @@ document.getElementById("queue").onclick = () => {
 }
 
 document.getElementById("create").onclick = () => {
-    const lobbyName = prompt("pp") 
+    const lobbyName = prompt("Please enter a name for your lobby (or leave it empty for an automatically generated name)!") 
     if (lobbyName != null && lobbyName != undefined) window.location.href = [window.location.href, "lobby", (lobbyName && "?name=" + lobbyName) || ""].join("")
 
 }
 
 document.getElementById("join").onclick = () => {
-    const lobbyName = prompt("pp")
+    const lobbyName = prompt("Enter the lobby code!")
     if (lobbyName != null && lobbyName != undefined) window.location.href = [window.location.href, lobbyName].join("")
 
 }

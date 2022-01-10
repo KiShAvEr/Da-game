@@ -219,6 +219,11 @@ wss.on("connection", (ws, req) => {
 
   let lobbyName
 
+  const interval = setInterval(() => {
+    con.ping()
+    con.pong()
+  }, 30000);
+
   if(req.url === "/board") {
      
     if(queue.length == 0) {
@@ -347,6 +352,8 @@ wss.on("connection", (ws, req) => {
 
   con.onclose = (ev) => {
     const game = games[con.id]
+
+    clearInterval(interval)
 
     queue = queue.filter(connection => connection.id != con.id)
 

@@ -69,7 +69,14 @@ socket.onmessage = (ev) => {        //if we receive a message
         default: {      //in every other case, it's a new game state being received
             switch(JSON.parse(ev.data).gameState) {
                 case undefined: {
-                    document.getElementById("inviteLink").innerHTML = "Invite link: " + window.location.origin + "/" + JSON.parse(ev.data).lobby
+                    document.getElementById("inviteLink").innerHTML = "Lobby code: " + JSON.parse(ev.data).lobby + " - "
+                    const copyButton = document.createElement("button")
+                    copyButton.innerHTML = "Copy Invite Link"
+                    copyButton.id = "copyButton"
+                    copyButton.onclick = () => {
+                        navigator.clipboard.writeText(window.location.origin + "/" + JSON.parse(ev.data).lobby).then(() => alert("Link copied! 😏"),() => alert("Couldn't copy link :("))
+                    }
+                    document.getElementById("inviteLink").appendChild(copyButton)
                     break
                 }
                 

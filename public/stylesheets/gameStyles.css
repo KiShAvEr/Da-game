@@ -8,6 +8,21 @@
   overflow: visible;
 }
 
+#inviteLink {
+  margin-top: 3vmin;
+}
+
+#copyButton {
+  background: #00A6D6;
+  color: white;
+  text-transform: uppercase;
+  border-radius: 0.5vmin;
+}
+
+#copyButton:hover {
+  background: #1f6f86;
+}
+
 
 #topContainer {
   width: 50%;
