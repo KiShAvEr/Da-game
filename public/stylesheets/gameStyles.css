@@ -30,6 +30,10 @@
   margin-left: auto;
 }
 
+.playerIndicator::before, .playerIndicator::after {
+  content: "🦀";
+}
+
 #c0 {
   border-top-left-radius: 1vw;
   border-bottom-left-radius: 1vw;
@@ -60,6 +64,10 @@ h1 {
   object-fit: scale-down;
 }
 
+#delftImage:hover {
+  filter: grayscale();
+}
+
 .playerOne {
   background: #00A6D6
 }
@@ -87,6 +95,10 @@ h1 {
 
 .backArrow {
   fill: black
+}
+
+#copyButton:active {
+  color: #1F305E
 }
 
 .slots {
@@ -121,5 +133,24 @@ h1 {
   }
 }
 
+.grid {
+  display: grid;
+  justify-items: center;
+}
 
-
+@media (max-width: 1px), (max-height: 1px) {
+  body::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 10vmin;
+    color: greenyellow;
+    padding: 20px;
+    content: "Your window is too small (at least 2x2px is expected) to play this game. Enlarge the browser window or zoom out to play or disable the CSS @media query.";
+    background-color: black;
+    z-index: 100;
+  }
+}
