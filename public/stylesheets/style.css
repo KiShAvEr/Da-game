@@ -2,6 +2,14 @@ a {
   color: #00B7FF;
 }
 
+@font-face {
+  font-family: Paprika;
+  src: url("../assets/Paprika-Regular.ttf");
+}
+
+*{
+  font-family: Paprika;
+}
 
 body {
   margin: 0px; 

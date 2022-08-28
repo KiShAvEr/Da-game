@@ -5,6 +5,7 @@ const socket = new WebSocket(window.location.href.replace("http", "ws"))
 
 let table = [[],[],[],[],[],[],[]]      //this will store the current board state
 let ownPlayer;                          //playerOne or playerTwo
+// @ts-ignore
 let closed = false                      //keeps track of whether this user has closed a connection (to alert opponent)
 
 
@@ -22,15 +23,15 @@ backArrowContainer.addEventListener("click", () => {    //close the connection i
     if(socket) socket.close()
 })
 
-
-
 backArrowContainer.addEventListener("mouseenter", () => {       //make the back button a bit more interactive
     for(let element of document.getElementsByClassName("backArrow")) {
+        // @ts-ignore
         element.style.fill = "gray"
     }
 })
 backArrowContainer.addEventListener("mouseleave", () => {
     for(let element of document.getElementsByClassName("backArrow")) {
+        // @ts-ignore
         element.style.fill = "black"
     }
 })
@@ -68,7 +69,14 @@ socket.onmessage = (ev) => {        //if we receive a message
         default: {      //in every other case, it's a new game state being received
             switch(JSON.parse(ev.data).gameState) {
                 case undefined: {
-                    document.getElementById("inviteLink").innerHTML = "Invite link: " + window.location.origin + "/" + JSON.parse(ev.data).lobby
+                    document.getElementById("inviteLink").innerHTML = "Lobby code: " + JSON.parse(ev.data).lobby + " - "
+                    const copyButton = document.createElement("button")
+                    copyButton.innerHTML = "Copy Invite Link"
+                    copyButton.id = "copyButton"
+                    copyButton.onclick = () => {
+                        navigator.clipboard.writeText(window.location.origin + "/" + JSON.parse(ev.data).lobby).then(() => alert("Link copied! 😏"),() => alert("Couldn't copy link :("))
+                    }
+                    document.getElementById("inviteLink").appendChild(copyButton)
                     break
                 }
                 
@@ -112,7 +120,7 @@ socket.onmessage = (ev) => {        //if we receive a message
                                 socket.close()
                             }
         
-                        }, 500)
+                        }, 750)
         
                         break
                     }
@@ -125,17 +133,19 @@ socket.onmessage = (ev) => {        //if we receive a message
                                 const currentCanvas = document.getElementById(name);
                                 currentCanvas.addEventListener("mouseenter", () => {
                                     if (table[i][0] == 0){
+                                        // @ts-ignore
                                         currentCanvas.src = "./assets/slotsdark.png"
                                     }
                                 }) 
                                 currentCanvas.addEventListener("mouseleave", () => {
+                                    // @ts-ignore
                                     currentCanvas.src = "./assets/slots.png"
                                 })
                                 currentCanvas.addEventListener("click", () => {
                                     if (table[i][0] == 0){
-                                        console.log("ball dropped in canvas " + i)
                                         table[i].push("x")
                                         socket.send(JSON.stringify({"action": i, "actionName": "drop"}))
+                                        // @ts-ignore
                                         currentCanvas.src = "./assets/slots.png"
                                     }
                                 })   
@@ -165,12 +175,11 @@ socket.onmessage = (ev) => {        //if we receive a message
     return false
 }
 
-
-
 socket.onclose = (/** @type {CloseEvent} */ ev) => {
-    console.log(ev)
     if(ev.reason == "taken") alert("Lobby name is already taken")
     else if(ev.reason == "disconnect") alert("Opponent disconnected")
+    else if(ev.reason == "nonexistent") alert("Lobby does not exist")
+    else if(ev.reason == "invalid") alert("Invalid lobby name")
     else if(!closed) alert("Unexpected error in bagging area")
     window.location.href = window.location.origin
 }

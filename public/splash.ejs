@@ -14,8 +14,11 @@
             <img id="delftImage" src="./assets/delft.png" alt="Logo">
             G_R_A_V_I_T_R_I_P_S
         </div>
-        <div>
-            <button id = "button">Play</button>
+        <div id="buttons">
+            <button id = "queue">Quick Play</button>
+            <button id = "create">Create Lobby</button>
+            <button id = "join">Join Lobby</button>
+            <button id = "donate">Support me</button>
         </div>
         <div id="description">
                 Connect four pieces of your color horizontally, vertically or diagonally!
@@ -23,9 +26,9 @@
         </div>
         <div>
             <div id="statsContainer">
-                <div class = "stats">Completed games:</div>
+                <div class = "stats">Completed games</div>
                 <%= completed %>
-                <div class = "stats">Ongoing games:</div>
+                <div class = "stats">Ongoing games</div>
                 <%= ongoing %>
                 <div class = "stats">Fastest victory</div>
                 <div>

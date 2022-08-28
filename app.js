@@ -27,7 +27,7 @@ class GameState {
           }
           this.playerOneTurn = !this.playerOneTurn
   
-          this.winner = checkWin(this.board)
+          this.winner = this.checkWin()
     
           if(this.winner == 1) {
             this.wins.playerOne += 1
@@ -71,75 +71,75 @@ class GameState {
     this.winner = 0
   }
 
-}
+  checkWin = () => {
 
-
-class Game {
-  constructor(p1, p2) {
-    this.playerOne = p1
-    this.playerTwo = p2
-    this.gameState = new GameState()
-  }
-}
-
-const checkWin = (board) => {
-
-  const checkTheVertical = (board) => {
-    for(let col of board) {
-      for(let i = 0; i < 3; i++) {
-        if(col[i] != 0 && col[i] == col[i+1] && col[i] == col[i+2] && col[i] == col[i+3]) return col[i]
+    const checkTheVertical = (board) => {
+      for(let col of board) {
+        for(let i = 0; i < 3; i++) {
+          if(col[i] != 0 && col[i] == col[i+1] && col[i] == col[i+2] && col[i] == col[i+3]) return col[i]
+        }
       }
+      return 0
     }
-    return 0
-  }
+    
+    const checkTheHorizontal = (board) => {
+      for(let i = 0; i < 4; i++) {
+        for(let j = 0; j < 6; j++) {
+          if(board[i][j] != 0 && board[i][j] == board[i+1][j] && board[i][j] == board[i+2][j] && board[i][j] == board[i+3][j]) return board[i][j]
+        }
+      }
+      return 0
+    }
+    
+    const checkTheDiagonal = (board) => {
+      for(let i = 0; i < 4; i++) {
+        for(let j = 0; j < 3; j++) {
+          if(board[i][j] != 0 && board[i][j] == board[i+1][j+1] && board[i][j] == board[i+2][j+2] && board[i][j] == board[i+3][j+3]) return board[i][j]
+        }
+      }
+      for(let i = 3; i < 7; i++) {
+        for(let j = 0; j < 3; j++) {
+          if(board[i][j] != 0 && board[i][j] == board[i-1][j+1] && board[i][j] == board[i-2][j+2] && board[i][j] == board[i-3][j+3]) return board[i][j]
+        }
+      }
+      return 0
+    }
   
-  const checkTheHorizontal = (board) => {
-    for(let i = 0; i < 4; i++) {
-      for(let j = 0; j < 6; j++) {
-        if(board[i][j] != 0 && board[i][j] == board[i+1][j] && board[i][j] == board[i+2][j] && board[i][j] == board[i+3][j]) return board[i][j]
-      }
-    }
-    return 0
-  }
   
-  const checkTheDiagonal = (board) => {
-    for(let i = 0; i < 4; i++) {
-      for(let j = 0; j < 3; j++) {
-        if(board[i][j] != 0 && board[i][j] == board[i+1][j+1] && board[i][j] == board[i+2][j+2] && board[i][j] == board[i+3][j+3]) return board[i][j]
-      }
+    const diagonal = checkTheDiagonal(this.board)          //3000000
+    const vertical = checkTheVertical(this.board)
+    const horizontal = checkTheHorizontal(this.board)
+  
+    if(diagonal != 0) {
+      return diagonal
     }
-    for(let i = 3; i < 7; i++) {
-      for(let j = 0; j < 3; j++) {
-        if(board[i][j] != 0 && board[i][j] == board[i-1][j+1] && board[i][j] == board[i-2][j+2] && board[i][j] == board[i-3][j+3]) return board[i][j]
-      }
+  
+    if(vertical != 0) {
+      return vertical
     }
+  
+    if(horizontal != 0) {
+      return horizontal
+    }
+  
+    if(!this.board.flat().includes(0)) {
+      return -1
+    }
+  
     return 0
+  
   }
-
-
-  const diagonal = checkTheDiagonal(board)          //3000000
-  const vertical = checkTheVertical(board)
-  const horizontal = checkTheHorizontal(board)
-
-  if(diagonal != 0) {
-    return diagonal
-  }
-
-  if(vertical != 0) {
-    return vertical
-  }
-
-  if(horizontal != 0) {
-    return horizontal
-  }
-
-  if(!board.flat().includes(0)) {
-    return -1
-  }
-
-  return 0
 
 }
+
+
+
+function Game(p1, p2) {
+  this.playerOne = p1
+  this.playerTwo = p2
+  this.gameState = new GameState()
+}
+
 
 
 const port = process.env.PORT || process.argv[2] || 3000
@@ -154,6 +154,10 @@ app.get("/", (req, res) => {
 
 app.get("/data", (req,res) => {
   res.send({completed, ongoing: Object.keys(games).length/2, fastest})
+})
+
+app.get("/link", (req,res) => {
+  res.send({link: Math.random() < 0.5 ? "https://youtu.be/dQw4w9WgXcQ": "https://paypal.me/varadiistvan"})
 })
 
 app.get("/*", (req, res) => {
@@ -211,6 +215,13 @@ server.on("upgrade", (req, sock, head) => {
 wss.on("connection", (ws, req) => {
   const con = Object.assign(ws, {id: counter++, wantsToRematch: undefined})
 
+  let lobbyName
+
+  const interval = setInterval(() => {
+    con.ping()
+    con.pong()
+  }, 30000);
+
   if(req.url === "/board") {
      
     if(queue.length == 0) {
@@ -249,10 +260,15 @@ wss.on("connection", (ws, req) => {
   }
 
   else if(req.url.substring(0, 6) === "/lobby") {
-    const lobbyName = new URLSearchParams(req.url.substring(7)).get("name")
+    lobbyName = new URLSearchParams(req.url.substring(7)).get("name")
+    if(lobbyName && (lobbyName.toLocaleLowerCase() === "board" || lobbyName.toLocaleLowerCase() === "lobby")) {
+      con.close(4003, "invalid")
+      return
+    }
     if(!lobbyName) {
-      lobbies[createHash("sha512").update(con.id.toString()).digest("base64url").substring(0, 12)] = con
-      con.send(JSON.stringify({"lobby": createHash("sha512").update(con.id.toString()).digest("base64url").substring(0, 12)}))
+      lobbyName = createHash("sha512").update(con.id.toString()).digest("base64url").substring(0, 12)
+      lobbies[lobbyName] = con
+      con.send(JSON.stringify({"lobby": lobbyName}))
     }
     else {
       if(lobbies[lobbyName]) {
@@ -265,6 +281,7 @@ wss.on("connection", (ws, req) => {
     }
     con.send("waiting")
   }
+
   else {
     if(lobbies[req.url.substring(1)]) {
       const otherPlayer = lobbies[req.url.substring(1)]
@@ -295,6 +312,9 @@ wss.on("connection", (ws, req) => {
         "gameState": game.gameState,
         "error": null
       }))
+    }
+    else {
+      con.close(4002, "nonexistent")
     }
   }
 
@@ -331,9 +351,11 @@ wss.on("connection", (ws, req) => {
   con.onclose = (ev) => {
     const game = games[con.id]
 
+    clearInterval(interval)
+
     queue = queue.filter(connection => connection.id != con.id)
 
-    
+    if(lobbyName) delete lobbies[lobbyName]
 
     if(game) {
       if(game.playerOne.readyState != 2 && game.playerOne.readyState != 3) {

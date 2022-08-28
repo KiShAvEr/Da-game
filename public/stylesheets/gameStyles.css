@@ -8,11 +8,30 @@
   overflow: visible;
 }
 
+#inviteLink {
+  margin-top: 3vmin;
+}
+
+#copyButton {
+  background: #00A6D6;
+  color: white;
+  text-transform: uppercase;
+  border-radius: 0.5vmin;
+}
+
+#copyButton:hover {
+  background: #1f6f86;
+}
+
 
 #topContainer {
   width: 50%;
   margin-right: 25%;
   margin-left: auto;
+}
+
+.playerIndicator::before, .playerIndicator::after {
+  content: "🦀";
 }
 
 #c0 {
@@ -29,7 +48,9 @@
   width: 15vw;
 }
 
-
+h1 {
+  font-size: 3.6vmin;
+}
 
 .playerColor {
   width: 10vw; 
@@ -41,6 +62,10 @@
 #delftImage {
   width: 15%; 
   object-fit: scale-down;
+}
+
+#delftImage:hover {
+  filter: grayscale();
 }
 
 .playerOne {
@@ -72,6 +97,10 @@
   fill: black
 }
 
+#copyButton:active {
+  color: #1F305E
+}
+
 .slots {
   position: absolute;
   left: 0;
@@ -82,13 +111,46 @@
   margin: 0;
 }
 
+
+
 .token {
-  width: 10vmin;
-  height: 10vmin;
-  border-radius: 5vmin;
+  width: 8vmin;
+  height: 8vmin;
+  min-height: 8vmin;
+  border-radius: 4vmin;
+  margin: 1vmin;
   position: relative;
   z-index: 1;
+  animation: tokenfall 0.5s ease-in 1;
 }
 
+@keyframes tokenfall{
+  from {
+    margin-bottom: 1000%;
+  }
+  to {
+    margin-bottom: 1vmin;
+  }
+}
 
+.grid {
+  display: grid;
+  justify-items: center;
+}
 
+@media (max-width: 1px), (max-height: 1px) {
+  body::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 10vmin;
+    color: greenyellow;
+    padding: 20px;
+    content: "Your window is too small (at least 2x2px is expected) to play this game. Enlarge the browser window or zoom out to play or disable the CSS @media query.";
+    background-color: black;
+    z-index: 100;
+  }
+}
