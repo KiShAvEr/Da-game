@@ -2,6 +2,7 @@ const express = require('express')
 const http = require('http')
 const webSocket = require("ws")
 const {createHash} = require('crypto')
+const cors = require('cors')
 
 class GameState {
   constructor() {
